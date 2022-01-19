@@ -17,7 +17,14 @@
 package smithy4s
 package http4s
 
+import smithy.api.ProtocolDefinition
+
 object SimpleRestJsonBuilder
     extends SimpleProtocolBuilder[smithy4s.api.SimpleRestJson](
-      smithy4s.http.json.codecs
+      smithy4s.http.json.codecs,
+      smithy4s.api.SimpleRestJson.hints
+        .get(ProtocolDefinition)
+        .map(_.traits)
+        .flatten
+        .getOrElse(List.empty)
     )

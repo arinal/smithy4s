@@ -25,6 +25,7 @@ import org.http4s._
 import org.http4s.headers.`Content-Type`
 import smithy4s.http.BodyPartial
 import smithy4s.http.CodecAPI
+import smithy.api.TraitShapeId
 
 trait EntityCompiler[F[_]] {
 
@@ -61,7 +62,8 @@ trait EntityCompiler[F[_]] {
 object EntityCompiler {
 
   def fromCodecAPI[F[_]](
-      codecAPI: CodecAPI
+      codecAPI: CodecAPI,
+      acceptableHints: List[TraitShapeId]
   )(implicit F: EffectCompat[F]): EntityCompiler[F] =
     new EntityCompiler[F] {
       def compileEntityEncoder[A](schema: Schema[A]): EntityEncoder[F, A] = {

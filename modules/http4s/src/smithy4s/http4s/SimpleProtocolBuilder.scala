@@ -24,13 +24,17 @@ import org.http4s.HttpRoutes
 import org.http4s.Uri
 import org.http4s.client.Client
 import smithy4s.http.CodecAPI
+import smithy.api.TraitShapeId
 
 /**
   * Abstract construct helping the construction of routers and clients
   * for a given protocol. Upon constructing the routers/clients, it will
   * first check that they are indeed annotated with the protocol in question.
   */
-abstract class SimpleProtocolBuilder[P](codecs: CodecAPI)(implicit
+abstract class SimpleProtocolBuilder[P](
+    codecs: CodecAPI,
+    acceptableHints: List[TraitShapeId]
+)(implicit
     protocolKey: Hints.Key[P]
 ) {
 
@@ -67,7 +71,10 @@ abstract class SimpleProtocolBuilder[P](codecs: CodecAPI)(implicit
             baseUri,
             service,
             Left(http4sClient),
-            EntityCompiler.fromCodecAPI[F](codecs)
+            EntityCompiler.fromCodecAPI[F](
+              codecs,
+              acceptableHints
+            )
           )
         )
         .map(service.transform[GenLift[F]#λ](_))
